@@ -1,17 +1,21 @@
-# This is a sample Python script.
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
 from bs4 import BeautifulSoup
+import requests
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+URL = 'https://barbora.lv/produkti/mandelu-dzeriens-bez-cukura-alpro-1-l'
+page = requests.get(URL)
+content = page.content
 
+soup = BeautifulSoup(content, 'html.parser')
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+h3_tag = soup.find('h3', {"class": "b-product-info--info-3-title"})
+h3_name = h3_tag.text
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+food_table = soup.find(class_="table table-striped table-condensed")
+
+rows = food_table.findChildren(['tr'])
+
+for row in rows:
+    cells = row.findChildren('td', {"class": "b-text-right"})
+    for cell in cells:
+        value = cell.string
+        print("The value in this cell is %s" % value)
